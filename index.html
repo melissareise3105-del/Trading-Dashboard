@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading KPI Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Trading KPI Dashboard</p>
+          <h1>Excel laden, Trades analysieren.</h1>
+        </div>
+        <label class="upload">
+          <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" />
+          <span>Datei auswählen</span>
+        </label>
+      </section>
+
+      <section class="helper" id="helper">
+        <div>
+          <strong>Erwartete Spalten</strong>
+          <span>
+            Datum, Symbol, Markt, Richtung, Strategie, Entry, Exit, Menge,
+            Risiko, P&amp;L, Gebühren. Deutsche und englische Spaltennamen werden erkannt.
+          </span>
+        </div>
+        <div class="actions">
+          <button id="loadDemo" type="button">Demo-Daten laden</button>
+          <button id="clearData" type="button">Daten löschen</button>
+        </div>
+      </section>
+
+      <section class="filters" aria-label="Filter">
+        <div class="field">
+          <label for="dateFrom">Von</label>
+          <input id="dateFrom" type="date" />
+        </div>
+        <div class="field">
+          <label for="dateTo">Bis</label>
+          <input id="dateTo" type="date" />
+        </div>
+        <div class="field">
+          <label for="symbolFilter">Symbol</label>
+          <select id="symbolFilter"></select>
+        </div>
+        <div class="field">
+          <label for="strategyFilter">Strategie</label>
+          <select id="strategyFilter"></select>
+        </div>
+        <div class="field">
+          <label for="directionFilter">Richtung</label>
+          <select id="directionFilter"></select>
+        </div>
+        <div class="field">
+          <label for="resultFilter">Ergebnis</label>
+          <select id="resultFilter">
+            <option value="all">Alle</option>
+            <option value="win">Gewinner</option>
+            <option value="loss">Verlierer</option>
+            <option value="flat">Breakeven</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="kpis" aria-label="Kennzahlen">
+        <article class="kpi">
+          <span>Net P&amp;L</span>
+          <strong id="netPnl">0,00</strong>
+        </article>
+        <article class="kpi">
+          <span>Win Rate</span>
+          <strong id="winRate">0%</strong>
+        </article>
+        <article class="kpi">
+          <span>Profit Factor</span>
+          <strong id="profitFactor">0,00</strong>
+        </article>
+        <article class="kpi">
+          <span>Max Drawdown</span>
+          <strong id="maxDrawdown">0,00</strong>
+        </article>
+        <article class="kpi">
+          <span>Trades</span>
+          <strong id="tradeCount">0</strong>
+        </article>
+        <article class="kpi">
+          <span>Ø R-Multiple</span>
+          <strong id="avgR">0,00R</strong>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="panel wide">
+          <div class="panel-head">
+            <h2>Equity Curve</h2>
+            <span id="dataStatus">Keine Datei geladen</span>
+          </div>
+          <canvas id="equityChart"></canvas>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>P&amp;L nach Strategie</h2>
+          </div>
+          <canvas id="strategyChart"></canvas>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>P&amp;L nach Symbol</h2>
+          </div>
+          <canvas id="symbolChart"></canvas>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Long vs. Short</h2>
+          </div>
+          <canvas id="directionChart"></canvas>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Monatliches P&amp;L</h2>
+          </div>
+          <canvas id="monthChart"></canvas>
+        </article>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-head">
+          <h2>Trades</h2>
+          <span id="shownRows">0 Zeilen</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Symbol</th>
+                <th>Strategie</th>
+                <th>Richtung</th>
+                <th>Risiko</th>
+                <th>P&amp;L Netto</th>
+                <th>R</th>
+              </tr>
+            </thead>
+            <tbody id="tradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
